@@ -1,0 +1,44 @@
+<!DOCTYPE html> 
+<html>
+<head>
+	<title>Calendrier des activités</title>
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="jquerymobile/jquery.mobile-1.4.5.min.css" />
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/calendrier.js"></script>
+	<script type="text/javascript" src="jquerymobile/jquery.min.js"></script>
+	<script type="text/javascript" src="jquerymobile/jquery.mobile-1.4.5.min.js"></script>
+	<script type="text/javascript">
+		function onLoad() {
+			$('#status').html('chargement terminé<br>');
+			function onDeviceReady() {
+				init_calendrier();
+			}
+			document.addEventListener("deviceready", onDeviceReady, false);
+
+		}
+	</script>
+</head>
+<body onload="onLoad()">
+	<div data-role="page" id="splash">
+		<div data-role="header">Calendrier</div>
+		<div role="main" class="ui-content">
+			<p>Bienvenue sur le calendrier des activités de Picardie Nature.</p>
+			<p><a href="#home">Démarrer</a></p>
+			<div id="status"></div>
+
+		</div>
+		<div data-role="footer">...</div>
+	</div>
+	<div data-role="page" id="home">
+		<div role="main" class="ui-content">
+			<p>Bienvenue sur le calendrier des activités de Picardie Nature.</p>
+			<p><a href="javascript:;" id="btn_mettre_a_jour">Mettre à jour votre copie</a></p>
+			<div id="maj_log"></div>
+		</div>
+	</div>
+</body>
+</html>
