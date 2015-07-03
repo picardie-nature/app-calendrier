@@ -2,12 +2,11 @@
 <html>
 <head>
 	<title>Calendrier des activités</title>
+	<meta charset="utf-8">
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="jquerymobile/jquery.mobile-1.4.5.min.css" />
-	<link rel="stylesheet" href="jquerymobile/jquery.mobile.theme-1.4.5.min.css" />
-	<link rel="stylesheet" href="jquerymobile/jquery.mobile.structure-1.4.5.min.css" />
 
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/calendrier.js"></script>
@@ -38,18 +37,29 @@
 	<div data-role="page" id="home">
 		<div role="main" class="ui-content">
 			<p>Bienvenue sur le calendrier des activités de Picardie Nature.</p>
-			<p><a href="#types">Consulter par types d'activités</a></p>
-			<p><a href="javascript:;" id="btn_mettre_a_jour">Mettre à jour votre copie</a></p>
+			<ul data-role="listview" data-inset="true">
+				<li><a href="#types">Consulter par types d'activités</a></li>
+			</ul>
+			<a href="javascript:;" id="btn_mettre_a_jour">Mettre à jour votre copie</a>
 			<div id="maj_log"></div>
 		</div>
 	</div>
 	<div data-role="page" id="types">
 		<div role="main" class="ui-content">
 			<p>Types de sorties</p>
-			<ul data-role="listview" id="liste_types">
+			<ul data-role="listview" id="liste_types"  data-inset="true">
 			</ul>
 			<div id="typ_log"></div>
 		</div>
 	</div>
+	<div data-role="page" id="liste_sorties" type_sorties="-1">
+		<div role="main" class="ui-content">
+			<p>Liste des sorties</p>
+			<ul data-role="listview" id="lv_sorties"  data-inset="true">
+			</ul>
+			<div id="ls_log"></div>
+		</div>
+	</div>
+
 </body>
 </html>

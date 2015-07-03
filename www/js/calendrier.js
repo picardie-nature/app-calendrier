@@ -85,13 +85,56 @@ function init_calendrier() {
 	$('#types').on("pageshow", function(evt) {
 			$('#typ_log').html('init<br/>');
 			var re_type = /^type-/;
+			$('#liste_types').html("");
 			for (var i=0;i<localStorage.length;i++) {
 				var k = localStorage.key(i);
 				if (k.match(re_type)) {
 					var id = k.split('-')[1];
-					$('#types').append("<ul>"+localStorage[k]+"</ul>");
+					$('#typ_log').append('add '+k+'<br/>');
+					//var html = "<li>"+localStorage[k]+"</li>";
+					//$('#liste_types').append(html);
+					$('#liste_types').append(
+						"<li><a href='javascript:;' "+
+						"class='btn_liste_type_sorties' "+
+						"type_sortie='"+id+"'>"+
+						localStorage[k]+
+						"</a>"+
+						"</li>"
+					).listview('refresh');
 				}
 			}
+			$('.btn_liste_type_sorties').click(function (e) {
+				$('#liste_sorties').attr('type_sortie', $(this).attr('type_sortie'));
+				$.mobile.navigate("#liste_sorties");
+			});
+		}
+	);
+	$('#liste_sorties').on("pageshow", function(evt) {
+			$('#ls_log').html("type_sortie="+$(this).attr('type_sortie')+"<br/>");
+			var type_sortie = $(this).attr('type_sortie');
+			if (type_sortie == -1) type_sortie = undefined;
+			var re_sortie = /^sortie-/;
+			$('#lv_sorties').html("");
+			for (var i=0;i<localStorage.length;i++) {	
+				var k = localStorage.key(i);
+				if (k.match(re_sortie)) {
+					var id = k.split('-')[1];
+					var sortie = JSON.parse(localStorage[k]);
+					if (type_sortie != undefined) {
+						// tester si les parseInt() sont necessaire
+						if (parseInt(sortie.id_sortie_type) != parseInt(type_sortie)) {
+							continue;
+						}
+					}
+					$('#lv_sorties').append(
+						"<li><a href='javascript:;' "+
+						"class='btn_liste_sortie' "+
+						"id_sortie="+id+" >"+sortie.nom_sortie+"</a></li>"
+					);
+				}
+			}
+			$('#lv_sorties').listview('refresh');
+			$('#ls_log').append("terminé<br/>");
 		}
 	);
 }
