@@ -6,6 +6,8 @@
         <meta name="msapplication-tap-highlight" content="no" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="jquerymobile/jquery.mobile-1.4.5.min.css" />
+	<link rel="stylesheet" href="jquerymobile/jquery.mobile.theme-1.4.5.min.css" />
+	<link rel="stylesheet" href="jquerymobile/jquery.mobile.structure-1.4.5.min.css" />
 
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/calendrier.js"></script>
@@ -36,8 +38,17 @@
 	<div data-role="page" id="home">
 		<div role="main" class="ui-content">
 			<p>Bienvenue sur le calendrier des activités de Picardie Nature.</p>
+			<p><a href="#types">Consulter par types d'activités</a></p>
 			<p><a href="javascript:;" id="btn_mettre_a_jour">Mettre à jour votre copie</a></p>
 			<div id="maj_log"></div>
+		</div>
+	</div>
+	<div data-role="page" id="types">
+		<div role="main" class="ui-content">
+			<p>Types de sorties</p>
+			<ul data-role="listview" id="liste_types">
+			</ul>
+			<div id="typ_log"></div>
 		</div>
 	</div>
 </body>

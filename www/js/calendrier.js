@@ -13,6 +13,7 @@ function charger_calendrier() {
 				$('#maj_log').append("Sortie : "+data.sorties[i].nom_sortie+"<br/>");
 			}*/
 			sauve_calendrier(data);
+			construire_index_calendrier();
 
 		},
 		method: "post",
@@ -47,9 +48,50 @@ function sauve_calendrier(cal) {
 		var cle ="pole-"+cal.poles_sortie[i].id_sortie_pole;
 		localStorage.setItem(cle, cal.poles_sortie[i].lib);
 	}
-	$('#maj_log').append("Enregistrement terminé "+localStorage.length+ " éléments");
+	$('#maj_log').append("Enregistrement terminé "+localStorage.length+ " éléments<br/>");
+}
+
+function construire_index_calendrier() {
+	$('#maj_log').append('Indexation<br/>');
+	var index_types = {};
+	var index_dates = {};
+	for (var i=0;i<localStorage.length;i++) {
+		var k = localStorage.key(i);
+		var v = localStorage[k];
+
+		var re_sortie = /^sortie-/;
+		if (k.match(re_sortie)) {
+			var s = undefined;
+			try {
+				var s = JSON.parse(v);
+			} catch (e) {
+				$('#maj_log').append("pas reussi a parser "+v);
+			}
+			$('#maj_log').append(s.nom_sortie+"<br/>");
+			if (index_types[s.id_sortie_type] == undefined) {
+				index_types[s.id_sortie_type] = [s.id_sortie];
+			} else {
+				index_types[s.id_sortie_type].push(s.id_sortie);
+			}
+		}
+	}
+	localStorage['index_types'] = JSON.stringify(index_types);
+	$('#maj_log').append('Indexation terminée<br/>');
 }
 
 function init_calendrier() {
 	$('#btn_mettre_a_jour').click(charger_calendrier);
+
+	$('#types').on("pageshow", function(evt) {
+			$('#typ_log').html('init<br/>');
+			var re_type = /^type-/;
+			for (var i=0;i<localStorage.length;i++) {
+				var k = localStorage.key(i);
+				if (k.match(re_type)) {
+					var id = k.split('-')[1];
+					$('#types').append("<ul>"+localStorage[k]+"</ul>");
+				}
+			}
+		}
+	);
 }
