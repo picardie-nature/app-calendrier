@@ -86,21 +86,29 @@ function init_calendrier() {
 			$('#typ_log').html('init<br/>');
 			var re_type = /^type-/;
 			$('#liste_types').html("");
+			var index_types =  JSON.parse(localStorage['index_types']);
 			for (var i=0;i<localStorage.length;i++) {
 				var k = localStorage.key(i);
 				if (k.match(re_type)) {
 					var id = k.split('-')[1];
-					$('#typ_log').append('add '+k+'<br/>');
-					//var html = "<li>"+localStorage[k]+"</li>";
-					//$('#liste_types').append(html);
-					$('#liste_types').append(
-						"<li><a href='javascript:;' "+
-						"class='btn_liste_type_sorties' "+
-						"type_sortie='"+id+"'>"+
-						localStorage[k]+
-						"</a>"+
-						"</li>"
-					).listview('refresh');
+					//$('#typ_log').append('add '+k+'<br/>');
+					var span_count;
+					try {
+						span_count = index_types[id].length;
+					} catch (e) {
+						span_count = 0;
+					}
+					if (span_count > 0) {
+						$('#liste_types').append(
+							"<li><a href='javascript:;' "+
+							"class='btn_liste_type_sorties' "+
+							"type_sortie='"+id+"'>"+
+							localStorage[k]+
+							"<span class='ui-li-count'>"+span_count+"</span>"+
+							"</a>"+
+							"</li>"
+						).listview('refresh');
+					}
 				}
 			}
 			$('.btn_liste_type_sorties').click(function (e) {
@@ -109,8 +117,9 @@ function init_calendrier() {
 			});
 		}
 	);
+
 	$('#liste_sorties').on("pageshow", function(evt) {
-			$('#ls_log').html("type_sortie="+$(this).attr('type_sortie')+"<br/>");
+			//$('#ls_log').html("type_sortie="+$(this).attr('type_sortie')+"<br/>");
 			var type_sortie = $(this).attr('type_sortie');
 			if (type_sortie == -1) type_sortie = undefined;
 			var re_sortie = /^sortie-/;
@@ -134,7 +143,26 @@ function init_calendrier() {
 				}
 			}
 			$('#lv_sorties').listview('refresh');
-			$('#ls_log').append("terminé<br/>");
+			$('.btn_liste_sortie').click(function (e) {
+				$('#sortie').attr('id_sortie', $(this).attr('id_sortie'));
+				$.mobile.navigate("#sortie");
+			});
+		}
+	);
+
+	$('#sortie').on("pageshow", function (evt) {
+			var id = $(this).attr('id_sortie');
+			$('#s_log').html("id_sortie = "+id+"<br/>");
+			var json = localStorage["sortie-"+id]
+			$('#s_log').append(json+"<br/>");
+			var sortie = JSON.parse(json);
+
+			$('#s_titre').html(sortie.nom_sortie);
+			$('#s_description').html(sortie.desc);
+			$('#s_commune').html(sortie.commune);
+			$('#s_departement').html(sortie.departement);
+
+			$('#s_log').append("terminé<br/>");
 		}
 	);
 }
