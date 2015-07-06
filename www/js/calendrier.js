@@ -9,9 +9,6 @@ function charger_calendrier() {
 		success: function(data,txtstatus,xhr) {
 			$('#maj_log').append("Téléchargement terminé<br/>");
 			$('#maj_log').append(data.sorties.length+" sorties<br/>");
-			/*for (var i=0; i<data.sorties.length; i++) {
-				$('#maj_log').append("Sortie : "+data.sorties[i].nom_sortie+"<br/>");
-			}*/
 			sauve_calendrier(data);
 			construire_index_calendrier();
 
@@ -67,7 +64,6 @@ function construire_index_calendrier() {
 			} catch (e) {
 				$('#maj_log').append("pas reussi a parser "+v);
 			}
-			$('#maj_log').append(s.nom_sortie+"<br/>");
 			if (index_types[s.id_sortie_type] == undefined) {
 				index_types[s.id_sortie_type] = [s.id_sortie];
 			} else {
@@ -83,7 +79,7 @@ function init_calendrier() {
 	$('#btn_mettre_a_jour').click(charger_calendrier);
 
 	$('#types').on("pageshow", function(evt) {
-			$('#typ_log').html('init<br/>');
+			$('#typ_log').html('');
 			var re_type = /^type-/;
 			$('#liste_types').html("");
 			var index_types =  JSON.parse(localStorage['index_types']);
@@ -161,7 +157,31 @@ function init_calendrier() {
 			$('#s_description').html(sortie.desc);
 			$('#s_commune').html(sortie.commune);
 			$('#s_departement').html(sortie.departement);
+			
+			$('#s_dates').html("");
+			sortie.date_sortie.sort(function (a,b) {
+				var da = new Date(a.date_sortie);
+				var db = new Date(b.date_sortie);
+				if (da < db) return -1;
+				if (da > db) return 1;
+				return 0;
+			});
+			var options_date = {weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"};
+			var now = Date.now();
+			for (var i=0; i<sortie.date_sortie.length; i++) {
+				var d = sortie.date_sortie[i];
+				var obj_date = new Date(d.date_sortie);
 
+				if (obj_date < now) continue;
+
+				var html = "<p class='date_"+d.etat+"'>"+obj_date.toLocaleDateString('fr-fr',options_date);
+				if (d.inscription_prealable) 
+					html + "<span class='ins_prealable'>sur inscription</span>";
+				html += "<br/>";
+				html += "</p>";
+				$('#s_dates').append(html);
+			}
+			$("#s_description_lieu").html(sortie.description_lieu);
 			$('#s_log').append("terminé<br/>");
 		}
 	);
