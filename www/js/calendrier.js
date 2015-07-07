@@ -52,6 +52,7 @@ function construire_index_calendrier() {
 	$('#maj_log').append('Indexation<br/>');
 	var index_types = {};
 	var index_dates = {};
+	var index_reseaux = {};
 	for (var i=0;i<localStorage.length;i++) {
 		var k = localStorage.key(i);
 		var v = localStorage[k];
@@ -69,55 +70,77 @@ function construire_index_calendrier() {
 			} else {
 				index_types[s.id_sortie_type].push(s.id_sortie);
 			}
+			if (index_reseaux[s.id_sortie_reseau] == undefined) {
+				index_reseaux[s.id_sortie_reseau] = [s.id_sortie];
+			} else {
+				index_reseaux[s.id_sortie_reseau].push(s.id_sortie);
+			}
 		}
 	}
 	localStorage['index_types'] = JSON.stringify(index_types);
+	localStorage['index_reseaux'] = JSON.stringify(index_reseaux);
 	$('#maj_log').append('Indexation terminée<br/>');
 }
 
 function init_calendrier() {
 	$('#btn_mettre_a_jour').click(charger_calendrier);
-
-	$('#types').on("pageshow", function(evt) {
-			$('#typ_log').html('');
-			var re_type = /^type-/;
-			$('#liste_types').html("");
-			var index_types =  JSON.parse(localStorage['index_types']);
-			for (var i=0;i<localStorage.length;i++) {
-				var k = localStorage.key(i);
-				if (k.match(re_type)) {
-					var id = k.split('-')[1];
-					//$('#typ_log').append('add '+k+'<br/>');
-					var span_count;
-					try {
-						span_count = index_types[id].length;
-					} catch (e) {
-						span_count = 0;
-					}
-					if (span_count > 0) {
-						$('#liste_types').append(
-							"<li><a href='javascript:;' "+
-							"class='btn_liste_type_sorties' "+
-							"type_sortie='"+id+"'>"+
-							localStorage[k]+
-							"<span class='ui-li-count'>"+span_count+"</span>"+
-							"</a>"+
-							"</li>"
-						).listview('refresh');
-					}
+	function aff_liste_cles(k_index, re, ul_id, classe_btn, attr_page_sortie) {
+		var ul = $('#'+ul_id);
+		var index = JSON.parse(localStorage[k_index]);
+		ul.html("");
+		var keys = [];
+		for (var i=0;i<localStorage.length;i++) {
+			var k = localStorage.key(i); 
+			if (k.match(re)) { 
+				var id = k.split('-')[1]; 
+				var count; 
+				try { 
+					count = index[id].length; 
+				} catch (e) { 
+					count = 0;
+				}
+				if (count > 0) {
+					keys.push({kid: k, lib: localStorage[k], count: count});
 				}
 			}
-			$('.btn_liste_type_sorties').click(function (e) {
-				$('#liste_sorties').attr('type_sortie', $(this).attr('type_sortie'));
-				$.mobile.navigate("#liste_sorties");
-			});
 		}
-	);
-
+		keys.sort(function (a,b) {
+			if (a.lib > b.lib) return 1;
+			if (a.lib < b.lib) return -1;
+			return 0;
+		});
+		for (var i=0;i<keys.length;i++) {
+			var id = keys[i].kid.split('-')[1]; 
+			ul.append(
+				"<li><a href='javascript:;' "+
+				"class='"+classe_btn+"' "+
+				"id_filtre='"+id+"'>"+
+				keys[i].lib+
+				"<span class='ui-li-count'>"+keys[i].count+"</span>"+
+				"</a>"+
+				"</li>"
+			);
+		}
+		ul.listview('refresh');
+		$('#liste_sorties').attr("id_reseau", -1);
+		$('#liste_sorties').attr("type_sortie", -1);
+		$('.'+classe_btn).click(function (e) {
+			$('#liste_sorties').attr(attr_page_sortie, $(this).attr('id_filtre'));
+			$.mobile.navigate("#liste_sorties");
+		});
+	}
+	$('#types').on("pageshow", function(evt) {
+		aff_liste_cles("index_types", /^type-/, 'liste_types', 'btn_liste_type_sortie', 'type_sortie');
+	});
+	$('#reseaux').on("pageshow", function(evt) {
+		aff_liste_cles("index_reseaux", /^reseau-/, 'liste_reseaux', 'btn_liste_reseau', "id_reseau");
+	});
 	$('#liste_sorties').on("pageshow", function(evt) {
 			//$('#ls_log').html("type_sortie="+$(this).attr('type_sortie')+"<br/>");
-			var type_sortie = $(this).attr('type_sortie');
+			var type_sortie = parseInt($(this).attr('type_sortie'));
+			var id_reseau = parseInt($(this).attr('id_reseau'));
 			if (type_sortie == -1) type_sortie = undefined;
+			if (id_reseau == -1) id_reseau = undefined;
 			var re_sortie = /^sortie-/;
 			$('#lv_sorties').html("");
 			for (var i=0;i<localStorage.length;i++) {	
@@ -127,9 +150,12 @@ function init_calendrier() {
 					var sortie = JSON.parse(localStorage[k]);
 					if (type_sortie != undefined) {
 						// tester si les parseInt() sont necessaire
-						if (parseInt(sortie.id_sortie_type) != parseInt(type_sortie)) {
+						if (sortie.id_sortie_type != type_sortie)
 							continue;
-						}
+					}
+					if (id_reseau != undefined) {
+						if (sortie.id_sortie_reseau != id_reseau)
+							continue;
 					}
 					$('#lv_sorties').append(
 						"<li><a href='javascript:;' "+
@@ -183,6 +209,12 @@ function init_calendrier() {
 			}
 			$("#s_description_lieu").html(sortie.description_lieu);
 			$('#s_log').append("terminé<br/>");
+
+			var keys = Object.keys(sortie);
+			for (var i=0; i<keys.length; i++) {
+				$("#s_log").append("key : "+keys[i]+"<br>");
+			}
+			$('#s_log').append("pole "+sortie.pole+"<br>");
 		}
 	);
 }

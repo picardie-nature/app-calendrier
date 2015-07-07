@@ -40,23 +40,31 @@
 			<p>Bienvenue sur le calendrier des activités de Picardie Nature.</p>
 			<ul data-role="listview" data-inset="true">
 				<li><a href="#types">Consulter par types d'activités</a></li>
+				<li><a href="#reseaux">Consulter par réseau</a></li>
 			</ul>
 			<a href="javascript:;" id="btn_mettre_a_jour">Mettre à jour votre copie</a>
 			<div id="maj_log"></div>
 		</div>
 	</div>
 	<div data-role="page" id="types">
+		<div data-role="header">Types d'activités</div>
 		<div role="main" class="ui-content">
-			<p>Types de sorties</p>
-			<ul data-role="listview" id="liste_types"  data-inset="true">
-			</ul>
+			<ul data-role="listview" id="liste_types"></ul>
 			<div id="typ_log"></div>
 		</div>
 	</div>
-	<div data-role="page" id="liste_sorties" type_sorties="-1">
+	<div data-role="page" id="reseaux">
+		<div data-role="header">Par réseau</div>
 		<div role="main" class="ui-content">
-			<p>Liste des sorties</p>
-			<ul data-role="listview" id="lv_sorties"  data-inset="true">
+			<ul data-role="listview" id="liste_reseaux"></ul>
+			<div id="reseaux_log"></div>
+			<!--  data-inset="true" -->
+		</div>
+	</div>
+	<div data-role="page" id="liste_sorties" type_sorties="-1" id_reseau="-1">
+		<div data-role="header">Liste des activités</div>
+		<div role="main" class="ui-content">
+			<ul data-role="listview" id="lv_sorties"  > 
 			</ul>
 			<div id="ls_log"></div>
 		</div>
