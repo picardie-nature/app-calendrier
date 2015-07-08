@@ -45,6 +45,10 @@ function sauve_calendrier(cal) {
 		var cle ="pole-"+cal.poles_sortie[i].id_sortie_pole;
 		localStorage.setItem(cle, cal.poles_sortie[i].lib);
 	}
+	for (var i=0;i<cal.cadres_sortie.length;i++) {
+		var cle ="cadre-"+cal.cadres_sortie[i].id_sortie_cadre;
+		localStorage.setItem(cle, cal.cadres_sortie[i].lib);
+	}
 	$('#maj_log').append("Enregistrement terminé "+localStorage.length+ " éléments<br/>");
 }
 
@@ -53,6 +57,7 @@ function construire_index_calendrier() {
 	var index_types = {};
 	var index_dates = {};
 	var index_reseaux = {};
+	var index_cadres = {};
 	for (var i=0;i<localStorage.length;i++) {
 		var k = localStorage.key(i);
 		var v = localStorage[k];
@@ -75,17 +80,54 @@ function construire_index_calendrier() {
 			} else {
 				index_reseaux[s.id_sortie_reseau].push(s.id_sortie);
 			}
+			if (index_cadres[s.id_sortie_cadre] == undefined) {
+				index_cadres[s.id_sortie_cadre] = [s.id_sortie_cadre];
+			} else {
+				index_cadres[s.id_sortie_cadre].push(s.id_sortie_cadre);
+			}
 		}
 	}
 	localStorage['index_types'] = JSON.stringify(index_types);
 	localStorage['index_reseaux'] = JSON.stringify(index_reseaux);
+	localStorage['index_cadres'] = JSON.stringify(index_cadres);
 	$('#maj_log').append('Indexation terminée<br/>');
+}
+
+function sortie_tri_dates(sortie) {
+	sortie.date_sortie.sort(function (a,b) {
+		var da = new Date(a.date_sortie);
+		var db = new Date(b.date_sortie);
+		if (da < db) return -1;
+		if (da > db) return 1;
+		return 0;
+	});
+}
+
+function sortie_premiere_date(sortie) {
+	// a utiliser après sortie_tri_dates()
+	var now = Date.now();
+	var txt;
+	for (var i=0;i<sortie.date_sortie.length;i++) {
+		var d = new Date(sortie.date_sortie[i].date_sortie);
+		if (d > now) {
+			txt = d.toLocaleDateString('fr-fr',{weekday: "long", year: "numeric", month: "long", day: "numeric"});
+			var reste = sortie.date_sortie.length-i-1;
+			if (reste == 1) txt += " + une autre date";
+			if (reste > 1) txt += " + "+reste+" autres dates";
+			return txt;
+		}
+	}
+	return "pas de prochaine date "+sortie.date_sortie.length;
 }
 
 function init_calendrier() {
 	$('#btn_mettre_a_jour').click(charger_calendrier);
 	function aff_liste_cles(k_index, re, ul_id, classe_btn, attr_page_sortie) {
 		var ul = $('#'+ul_id);
+		if (localStorage[k_index] == undefined) {
+			navigator.notification.alert("Index manquant, synchronisez à nouveau le calendrier", null, "Erreur", "Ok");
+			return;
+		}
 		var index = JSON.parse(localStorage[k_index]);
 		ul.html("");
 		var keys = [];
@@ -135,12 +177,17 @@ function init_calendrier() {
 	$('#reseaux').on("pageshow", function(evt) {
 		aff_liste_cles("index_reseaux", /^reseau-/, 'liste_reseaux', 'btn_liste_reseau', "id_reseau");
 	});
+	$('#cadres').on("pageshow", function(evt) {
+		aff_liste_cles("index_cadres", /^cadre-/, 'liste_cadres', 'btn_liste_cadre', "id_cadre");
+	});
+
 	$('#liste_sorties').on("pageshow", function(evt) {
-			//$('#ls_log').html("type_sortie="+$(this).attr('type_sortie')+"<br/>");
 			var type_sortie = parseInt($(this).attr('type_sortie'));
 			var id_reseau = parseInt($(this).attr('id_reseau'));
+			var id_cadre = parseInt($(this).attr('id_cadre'));
 			if (type_sortie == -1) type_sortie = undefined;
 			if (id_reseau == -1) id_reseau = undefined;
+			if (id_cadre == -1) id_cadre = undefined;
 			var re_sortie = /^sortie-/;
 			$('#lv_sorties').html("");
 			for (var i=0;i<localStorage.length;i++) {	
@@ -152,15 +199,23 @@ function init_calendrier() {
 						// tester si les parseInt() sont necessaire
 						if (sortie.id_sortie_type != type_sortie)
 							continue;
-					}
-					if (id_reseau != undefined) {
+					} else if (id_reseau != undefined) {
 						if (sortie.id_sortie_reseau != id_reseau)
 							continue;
+					} else if (id_cadre != undefined) {
+						if (sortie.id_sortie_cadre != id_cadre)
+							continue;
 					}
+					sortie_tri_dates(sortie);
+					var date = sortie_premiere_date(sortie);
 					$('#lv_sorties').append(
 						"<li><a href='javascript:;' "+
 						"class='btn_liste_sortie' "+
-						"id_sortie="+id+" >"+sortie.nom_sortie+"</a></li>"
+						"id_sortie="+id+" >"+
+						"<h2>"+sortie.nom_sortie+"</h2>"+
+						"<p>"+date+"</p>"+
+						"<p class=ui-li-aside>"+sortie.departement+"</p>"+
+						"</a></li>"
 					);
 				}
 			}
@@ -181,17 +236,16 @@ function init_calendrier() {
 
 			$('#s_titre').html(sortie.nom_sortie);
 			$('#s_description').html(sortie.desc);
-			$('#s_commune').html(sortie.commune);
-			$('#s_departement').html(sortie.departement);
+			if (sortie.departement.length > 0) {
+				$('#s_commune').html(sortie.commune);
+				$('#s_departement').html(sortie.departement);
+				$('#s_z_commune').show();
+			} else {
+				$('#s_z_commune').hide();
+			}
 			
 			$('#s_dates').html("");
-			sortie.date_sortie.sort(function (a,b) {
-				var da = new Date(a.date_sortie);
-				var db = new Date(b.date_sortie);
-				if (da < db) return -1;
-				if (da > db) return 1;
-				return 0;
-			});
+			sortie_tri_dates(sortie);
 			var options_date = {weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"};
 			var now = Date.now();
 			for (var i=0; i<sortie.date_sortie.length; i++) {
@@ -208,6 +262,7 @@ function init_calendrier() {
 				$('#s_dates').append(html);
 			}
 			$("#s_description_lieu").html(sortie.description_lieu);
+			$('#s_public').html(localStorage["public-"+sortie.id_sortie_public]);
 			$('#s_log').append("terminé<br/>");
 
 			var keys = Object.keys(sortie);
