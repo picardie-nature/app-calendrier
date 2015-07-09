@@ -49,6 +49,8 @@ function sauve_calendrier(cal) {
 		var cle ="cadre-"+cal.cadres_sortie[i].id_sortie_cadre;
 		localStorage.setItem(cle, cal.cadres_sortie[i].lib);
 	}
+	var d = new Date(Date.now());
+	localStorage.setItem('derniere_maj', d.toString());
 	$('#maj_log').append("Enregistrement terminé "+localStorage.length+ " éléments<br/>");
 }
 
@@ -121,7 +123,6 @@ function sortie_premiere_date(sortie) {
 }
 
 function init_calendrier() {
-	$('#btn_mettre_a_jour').click(charger_calendrier);
 	function aff_liste_cles(k_index, re, ul_id, classe_btn, attr_page_sortie) {
 		var ul = $('#'+ul_id);
 		if (localStorage[k_index] == undefined) {
@@ -171,17 +172,27 @@ function init_calendrier() {
 			$.mobile.navigate("#liste_sorties");
 		});
 	}
-	$('#types').on("pageshow", function(evt) {
+	$('#home').on("pagebeforeshow", function (evt) {
+		$('#btn_mettre_a_jour').click(charger_calendrier);
+		var txt = "Date de dernière mise à jour inconnue, lancez une mise à jour";
+		if (localStorage['derniere_maj'] != undefined) {
+			var d = new Date(localStorage['derniere_maj']);
+			txt = "dernière actualisation : ";
+			txt += d.toLocaleDateString('fr-fr',{weekday: "long", year: "numeric", month: "long", day: "numeric"});
+		}
+		$("#home_derniere_synchro").html(txt);
+		$("#maj_log").html('');
+	});
+	$('#types').on("pagebeforeshow", function(evt) {
 		aff_liste_cles("index_types", /^type-/, 'liste_types', 'btn_liste_type_sortie', 'type_sortie');
 	});
-	$('#reseaux').on("pageshow", function(evt) {
+	$('#reseaux').on("pagebeforeshow", function(evt) {
 		aff_liste_cles("index_reseaux", /^reseau-/, 'liste_reseaux', 'btn_liste_reseau', "id_reseau");
 	});
-	$('#cadres').on("pageshow", function(evt) {
+	$('#cadres').on("pagebeforeshow", function(evt) {
 		aff_liste_cles("index_cadres", /^cadre-/, 'liste_cadres', 'btn_liste_cadre', "id_cadre");
 	});
-
-	$('#liste_sorties').on("pageshow", function(evt) {
+	$('#liste_sorties').on("pagebeforeshow", function(evt) {
 			var type_sortie = parseInt($(this).attr('type_sortie'));
 			var id_reseau = parseInt($(this).attr('id_reseau'));
 			var id_cadre = parseInt($(this).attr('id_cadre'));
@@ -226,13 +237,15 @@ function init_calendrier() {
 			});
 		}
 	);
-
-	$('#sortie').on("pageshow", function (evt) {
+	$('#sortie').on("pagebeforeshow", function (evt) {
 			var id = $(this).attr('id_sortie');
-			$('#s_log').html("id_sortie = "+id+"<br/>");
+			//$('#s_log').html("id_sortie = "+id+"<br/>");
 			var json = localStorage["sortie-"+id]
-			$('#s_log').append(json+"<br/>");
+			//$('#s_log').append(json+"<br/>");
 			var sortie = JSON.parse(json);
+
+			if (sortie.accessible_mobilite_reduite == 1) $('#accessible_mobilite_reduite').show();
+			else $('#accessible_mobilite_reduite').hide();
 
 			$('#s_titre').html(sortie.nom_sortie);
 			$('#s_description').html(sortie.desc);

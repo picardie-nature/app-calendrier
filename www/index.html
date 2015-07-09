@@ -43,7 +43,8 @@
 				<li><a href="#reseaux">Consulter par thème</a></li>
 				<li><a href="#cadres">Consulter par cadre</a></li>
 			</ul>
-			<a href="javascript:;" id="btn_mettre_a_jour">Mettre à jour votre copie</a>
+			<a href="javascript:;" class="ui-btn" id="btn_mettre_a_jour">Mettre à jour votre copie du calendrier</a>
+			<p id="home_derniere_synchro"></p>
 			<div id="maj_log"></div>
 		</div>
 	</div>
@@ -68,7 +69,6 @@
 			<ul data-role="listview" id="liste_cadres"></ul>
 		</div>
 	</div>
-
 	<div data-role="page" id="liste_sorties" type_sorties="-1" id_reseau="-1" id_cadre="-1">
 		<div data-role="header">Liste des activités</div>
 		<div role="main" class="ui-content">
@@ -80,6 +80,7 @@
 	<div data-role="page" id="sortie" id_sortie="-1">
 		<div data-role="header" id="s_titre">titre</div>
 		<div role="main" class="ui-content">
+			<img id="accessible_mobilite_reduite" src="img/mobilite_reduite_1.png"/>
 			<div id="s_z_commune">
 				<h4>Localisation</h4>
 				Sur la commune de <span id="s_commune"></span> (<span id="s_departement"></span>)
