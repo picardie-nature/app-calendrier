@@ -2,6 +2,18 @@ function charger_calendrier() {
 	$('#maj_log').append("Téléchargement de la mise à jour....<br/>");
 	var url = "http://sorties.picardie-nature.org/?t=export_json";
 	var key = "shu9eiLelohgh1aW"; // c'est pas un grand secret ;-)
+
+	var net_ok = false;
+	if (navigator.connection.type == Connection.WIFI) { net_ok = true }
+	else if (navigator.connection.type == Connection.CELL_3G) { net_ok = true }
+	else if (navigator.connection.type == Connection.CELL_4G) { net_ok = true }
+	else if (navigator.connection.type == Connection.ETHERNET) { net_ok = true }
+
+	if (!net_ok) {
+		navigator.notification.alert("Pas de connection Internet", null, "Erreur", "Ok");
+		return;
+	}
+
 	$.ajax({
 		dataType: "json",
 		url: url,
@@ -123,6 +135,8 @@ function sortie_premiere_date(sortie) {
 }
 
 function init_calendrier() {
+	$('#btn_mettre_a_jour').click(charger_calendrier);
+
 	function aff_liste_cles(k_index, re, ul_id, classe_btn, attr_page_sortie) {
 		var ul = $('#'+ul_id);
 		if (localStorage[k_index] == undefined) {
@@ -173,7 +187,6 @@ function init_calendrier() {
 		});
 	}
 	$('#home').on("pagebeforeshow", function (evt) {
-		$('#btn_mettre_a_jour').click(charger_calendrier);
 		var txt = "Date de dernière mise à jour inconnue, lancez une mise à jour";
 		if (localStorage['derniere_maj'] != undefined) {
 			var d = new Date(localStorage['derniere_maj']);
