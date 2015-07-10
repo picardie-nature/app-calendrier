@@ -1,3 +1,9 @@
+var etats = {
+	1: "Proposé",
+	2: "Pas retenue",
+	3: "Valide",
+	4: "Annulée"
+}
 function charger_calendrier() {
 	$('#maj_log').append("Téléchargement de la mise à jour....<br/>");
 	var url = "http://sorties.picardie-nature.org/?t=export_json";
@@ -32,7 +38,20 @@ function charger_calendrier() {
 	});
 }
 
+function nettoyer_localStorage() {
+	$('#maj_log').append("nettoyage de la base ...<br>");
+	var re_sortie = /^sortie-/;
+	for (var i=0;i<localStorage.length;i++) {
+		var k = localStorage.key(i);
+		if (k.match(re_sortie)) {
+			localStorage.removeItem(k);
+		}
+	}
+	$('#maj_log').append("nettoyage terminé<br>");
+}
+
 function sauve_calendrier(cal) {
+	nettoyer_localStorage();
 	for (var i=0;i<cal.sorties.length; i++) {
 		var nouvel_cle = "sortie-"+cal.sorties[i].id_sortie;
 		localStorage.setItem(nouvel_cle, JSON.stringify(cal.sorties[i]));
@@ -69,14 +88,13 @@ function sauve_calendrier(cal) {
 function construire_index_calendrier() {
 	$('#maj_log').append('Indexation<br/>');
 	var index_types = {};
-	var index_dates = {};
 	var index_reseaux = {};
 	var index_cadres = {};
+	var re_sortie = /^sortie-/;
 	for (var i=0;i<localStorage.length;i++) {
 		var k = localStorage.key(i);
 		var v = localStorage[k];
 
-		var re_sortie = /^sortie-/;
 		if (k.match(re_sortie)) {
 			var s = undefined;
 			try {
@@ -104,7 +122,32 @@ function construire_index_calendrier() {
 	localStorage['index_types'] = JSON.stringify(index_types);
 	localStorage['index_reseaux'] = JSON.stringify(index_reseaux);
 	localStorage['index_cadres'] = JSON.stringify(index_cadres);
-	$('#maj_log').append('Indexation terminée<br/>');
+
+	$('#maj_log').append('Indexation des dates...<br/>');
+	// indexation par date
+	var index_dates = [];
+	// format le la cle yyyy-mm-dd-hh-mm-id_sortie-offsetdate
+	function pad(n) {
+		if (n<10)
+			return "0"+n;
+		return n.toString();
+	}
+	for (var i=0;i<localStorage.length;i++) {
+		var k = localStorage.key(i);
+		if (!k.match(re_sortie))
+			continue;
+		var s = JSON.parse(localStorage[k]);
+		for (var j=0;j<s.date_sortie.length;j++) {
+			var etat = parseInt(s.date_sortie[j].etat);
+			if ( etat < 3) continue; // en attente ou pas retenue
+			var d = new Date(s.date_sortie[j].date_sortie);
+			var dk = pad(d.getFullYear())+"-"+pad(d.getMonth())+"-"+pad(d.getDate())+"-"+pad(d.getHours())+"-"+pad(d.getMinutes())+"-"+s.id_sortie+"-"+j;
+			index_dates.push(dk);
+		}
+	}
+	index_dates.sort();
+	localStorage['index_dates'] = JSON.stringify(index_dates);
+	$('#maj_log').append('Indexation terminée, vous pouvez consulter le calendrier<br/>');
 }
 
 function sortie_tri_dates(sortie) {
