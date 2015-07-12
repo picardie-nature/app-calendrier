@@ -211,10 +211,18 @@ function sortie_premiere_date(sortie) {
 	return "pas de prochaine date "+sortie.date_sortie.length;
 }
 
+function liste_sorties_attr_reset() {
+		$('#liste_sorties').attr("id_reseau", -1);
+		$('#liste_sorties').attr("id_cadre", -1);
+		$('#liste_sorties').attr("type_sortie", -1);
+		$('#liste_sorties').attr("favoris", -1);
+}
+
 function init_calendrier() {
 	$('#btn_mettre_a_jour').click(charger_calendrier);
 	$('#btn_ajout_favoris').click(ajouter_ou_retirer_aux_favoris);
 	$('#btn_ouvre_favoris').click(function (e) {
+		liste_sorties_attr_reset();
 		$('#liste_sorties').attr("favoris", 1);
 		$.mobile.navigate("#liste_sorties");
 	});
@@ -261,9 +269,7 @@ function init_calendrier() {
 			);
 		}
 		ul.listview('refresh');
-		$('#liste_sorties').attr("id_reseau", -1);
-		$('#liste_sorties').attr("type_sortie", -1);
-		$('#liste_sorties').attr("favoris", -1);
+		liste_sorties_attr_reset();
 		$('.'+classe_btn).click(function (e) {
 			$('#liste_sorties').attr(attr_page_sortie, $(this).attr('id_filtre'));
 			$.mobile.navigate("#liste_sorties");
