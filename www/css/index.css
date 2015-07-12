@@ -120,3 +120,7 @@ h1 {
 	color: black;
 	text-decoration: line-through;
 }
+
+.favoris {
+	background-color: green !important;
+}

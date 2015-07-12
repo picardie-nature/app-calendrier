@@ -1,3 +1,10 @@
+Array.prototype.removeItem = function (n) {
+	for (var i=n; i<this.length-1;i++) {
+		this[i] = this[i+1];
+	}
+	this.pop();
+}
+
 var etats = {
 	1: "Proposé",
 	2: "Pas retenue",
@@ -149,6 +156,34 @@ function construire_index_calendrier() {
 	$('#maj_log').append('Indexation terminée, vous pouvez consulter le calendrier<br/>');
 }
 
+function est_dans_les_favoris(id_sortie) {
+	if (localStorage['index_favoris'] != undefined) {
+		var index_favoris = JSON.parse(localStorage['index_favoris']);
+		return (index_favoris.indexOf(id_sortie) != -1);
+	}
+	return false;
+}
+
+function ajouter_ou_retirer_aux_favoris() {
+	var index_favoris;
+	var id_sortie = $('#sortie').attr('id_sortie');
+	var b_fav = $('#btn_ajout_favoris');
+
+	if (localStorage['index_favoris'] == undefined) {
+		index_favoris = [];
+	} else {
+		index_favoris = JSON.parse(localStorage['index_favoris']);
+	}
+	if (index_favoris.indexOf(id_sortie) == -1) {
+		index_favoris.push(id_sortie);
+		if (!b_fav.hasClass('favoris')) b_fav.addClass('favoris');
+	} else {
+		index_favoris.removeItem(index_favoris.indexOf(id_sortie));
+		if (b_fav.hasClass('favoris')) b_fav.removeClass('favoris');
+	}
+	localStorage.setItem('index_favoris', JSON.stringify(index_favoris));
+}
+
 function sortie_tri_dates(sortie) {
 	sortie.date_sortie.sort(function (a,b) {
 		var da = new Date(a.date_sortie);
@@ -178,6 +213,11 @@ function sortie_premiere_date(sortie) {
 
 function init_calendrier() {
 	$('#btn_mettre_a_jour').click(charger_calendrier);
+	$('#btn_ajout_favoris').click(ajouter_ou_retirer_aux_favoris);
+	$('#btn_ouvre_favoris').click(function (e) {
+		$('#liste_sorties').attr("favoris", 1);
+		$.mobile.navigate("#liste_sorties");
+	});
 
 	function aff_liste_cles(k_index, re, ul_id, classe_btn, attr_page_sortie) {
 		var ul = $('#'+ul_id);
@@ -223,6 +263,7 @@ function init_calendrier() {
 		ul.listview('refresh');
 		$('#liste_sorties').attr("id_reseau", -1);
 		$('#liste_sorties').attr("type_sortie", -1);
+		$('#liste_sorties').attr("favoris", -1);
 		$('.'+classe_btn).click(function (e) {
 			$('#liste_sorties').attr(attr_page_sortie, $(this).attr('id_filtre'));
 			$.mobile.navigate("#liste_sorties");
@@ -251,6 +292,19 @@ function init_calendrier() {
 			var type_sortie = parseInt($(this).attr('type_sortie'));
 			var id_reseau = parseInt($(this).attr('id_reseau'));
 			var id_cadre = parseInt($(this).attr('id_cadre'));
+			var afficher_favoris = ($(this).attr('favoris') == 1);
+			var favoris = [];
+			if (afficher_favoris) {
+				if (localStorage['index_favoris'] != undefined) {
+					try {
+						favoris = JSON.parse(localStorage['index_favoris']);
+					} catch (e) {
+						navigator.notification.alert("Il y a un problème avec la préselection, l'index corrompu va être effacé", null, "Erreur", "Ok");
+						localStorage.removeItem("index_favoris");
+						favoris = [];
+					}
+				}
+			}
 			if (type_sortie == -1) type_sortie = undefined;
 			if (id_reseau == -1) id_reseau = undefined;
 			if (id_cadre == -1) id_cadre = undefined;
@@ -262,6 +316,11 @@ function init_calendrier() {
 				var jour = index_key[6];
 				if (!localStorage["sortie-"+id]) {
 					navigator.notification.alert("La sortie "+id+" existe pas", null, "Erreur", "Ok");
+				}
+				if (afficher_favoris) {
+					if (favoris.indexOf(id) == -1) {
+						continue;
+					}
 				}
 				var sortie = JSON.parse(localStorage["sortie-"+id]);
 				if (type_sortie != undefined) {
@@ -299,6 +358,16 @@ function init_calendrier() {
 			var json = localStorage["sortie-"+id]
 			//$('#s_log').append(json+"<br/>");
 			var sortie = JSON.parse(json);
+
+			var b_fav = $('#btn_ajout_favoris');
+			if (est_dans_les_favoris(id)) {
+				if (!b_fav.hasClass('favoris')) {
+					b_fav.addClass('favoris');
+				}
+			} else {
+				if (b_fav.hasClass('favoris'))
+					b_fav.removeClass('favoris');
+			}
 
 			if (sortie.accessible_mobilite_reduite == 1) $('#accessible_mobilite_reduite').show();
 			else $('#accessible_mobilite_reduite').hide();
