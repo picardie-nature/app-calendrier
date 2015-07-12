@@ -90,7 +90,14 @@ function construire_index_calendrier() {
 	var index_types = {};
 	var index_reseaux = {};
 	var index_cadres = {};
+	var index_dates = [];
 	var re_sortie = /^sortie-/;
+	var aujourdhui = new Date(Date.now());
+	function pad(n) {
+		if (n<10)
+			return "0"+n;
+		return n.toString();
+	}
 	for (var i=0;i<localStorage.length;i++) {
 		var k = localStorage.key(i);
 		var v = localStorage[k];
@@ -102,6 +109,18 @@ function construire_index_calendrier() {
 			} catch (e) {
 				$('#maj_log').append("pas reussi a parser "+v);
 			}
+			var n_date_ok = 0;
+			for (var j=0;j<s.date_sortie.length;j++) {
+				var etat = parseInt(s.date_sortie[j].etat);
+				if (etat < 3) continue; // en attente ou pas retenue
+				var d = new Date(s.date_sortie[j].date_sortie);
+				if (d < aujourdhui) continue; // ne pas mettre ce qui est déjà passé
+				var dk = pad(d.getFullYear())+"-"+pad(d.getMonth())+"-"+pad(d.getDate())+"-"+pad(d.getHours())+"-"+pad(d.getMinutes())+"-"+s.id_sortie+"-"+j;
+				index_dates.push(dk);
+				n_date_ok += 1;
+			}
+			if (n_date_ok == 0)
+				continue;
 			if (index_types[s.id_sortie_type] == undefined) {
 				index_types[s.id_sortie_type] = [s.id_sortie];
 			} else {
@@ -123,28 +142,8 @@ function construire_index_calendrier() {
 	localStorage['index_reseaux'] = JSON.stringify(index_reseaux);
 	localStorage['index_cadres'] = JSON.stringify(index_cadres);
 
-	$('#maj_log').append('Indexation des dates...<br/>');
 	// indexation par date
-	var index_dates = [];
 	// format le la cle yyyy-mm-dd-hh-mm-id_sortie-offsetdate
-	function pad(n) {
-		if (n<10)
-			return "0"+n;
-		return n.toString();
-	}
-	for (var i=0;i<localStorage.length;i++) {
-		var k = localStorage.key(i);
-		if (!k.match(re_sortie))
-			continue;
-		var s = JSON.parse(localStorage[k]);
-		for (var j=0;j<s.date_sortie.length;j++) {
-			var etat = parseInt(s.date_sortie[j].etat);
-			if ( etat < 3) continue; // en attente ou pas retenue
-			var d = new Date(s.date_sortie[j].date_sortie);
-			var dk = pad(d.getFullYear())+"-"+pad(d.getMonth())+"-"+pad(d.getDate())+"-"+pad(d.getHours())+"-"+pad(d.getMinutes())+"-"+s.id_sortie+"-"+j;
-			index_dates.push(dk);
-		}
-	}
 	index_dates.sort();
 	localStorage['index_dates'] = JSON.stringify(index_dates);
 	$('#maj_log').append('Indexation terminée, vous pouvez consulter le calendrier<br/>');
@@ -255,36 +254,37 @@ function init_calendrier() {
 			if (type_sortie == -1) type_sortie = undefined;
 			if (id_reseau == -1) id_reseau = undefined;
 			if (id_cadre == -1) id_cadre = undefined;
-			var re_sortie = /^sortie-/;
 			$('#lv_sorties').html("");
-			for (var i=0;i<localStorage.length;i++) {	
-				var k = localStorage.key(i);
-				if (k.match(re_sortie)) {
-					var id = k.split('-')[1];
-					var sortie = JSON.parse(localStorage[k]);
-					if (type_sortie != undefined) {
-						// tester si les parseInt() sont necessaire
-						if (sortie.id_sortie_type != type_sortie)
-							continue;
-					} else if (id_reseau != undefined) {
-						if (sortie.id_sortie_reseau != id_reseau)
-							continue;
-					} else if (id_cadre != undefined) {
-						if (sortie.id_sortie_cadre != id_cadre)
-							continue;
-					}
-					sortie_tri_dates(sortie);
-					var date = sortie_premiere_date(sortie);
-					$('#lv_sorties').append(
-						"<li><a href='javascript:;' "+
-						"class='btn_liste_sortie' "+
-						"id_sortie="+id+" >"+
-						"<h2>"+sortie.nom_sortie+"</h2>"+
-						"<p>"+date+"</p>"+
-						"<p class=ui-li-aside>"+sortie.departement+"</p>"+
-						"</a></li>"
-					);
+			var index_dates = JSON.parse(localStorage['index_dates']);
+			for (var i=0;i<index_dates.length;i++) {
+				var index_key = index_dates[i].split('-');
+				var id = index_key[5];
+				var jour = index_key[6];
+				if (!localStorage["sortie-"+id]) {
+					navigator.notification.alert("La sortie "+id+" existe pas", null, "Erreur", "Ok");
 				}
+				var sortie = JSON.parse(localStorage["sortie-"+id]);
+				if (type_sortie != undefined) {
+					if (sortie.id_sortie_type != type_sortie)
+						continue;
+				} else if (id_reseau != undefined) {
+					if (sortie.id_sortie_reseau != id_reseau)
+						continue;
+				} else if (id_cadre != undefined) {
+					if (sortie.id_sortie_cadre != id_cadre)
+						continue;
+				}
+				var date = new Date(sortie.date_sortie[jour].date_sortie)
+				date = date.toLocaleDateString('fr-fr',{weekday: "long", year: "numeric", month: "long", day: "numeric"});
+				$('#lv_sorties').append(
+					"<li><a href='javascript:;' "+
+					"class='btn_liste_sortie' "+
+					"id_sortie="+id+" >"+
+					"<h2>"+sortie.nom_sortie+"</h2>"+
+					"<p>"+date+"</p>"+
+					"<p class=ui-li-aside>"+sortie.departement+"</p>"+
+					"</a></li>"
+				);
 			}
 			$('#lv_sorties').listview('refresh');
 			$('.btn_liste_sortie').click(function (e) {
@@ -324,7 +324,7 @@ function init_calendrier() {
 				if (obj_date < now) continue;
 
 				var html = "<p class='date_"+d.etat+"'>"+obj_date.toLocaleDateString('fr-fr',options_date);
-				if (d.inscription_prealable) 
+				if (d.inscription_prealable == true) 
 					html + "<span class='ins_prealable'>sur inscription</span>";
 				html += "<br/>";
 				html += "</p>";
@@ -332,6 +332,7 @@ function init_calendrier() {
 			}
 			$("#s_description_lieu").html(sortie.description_lieu);
 			$('#s_public').html(localStorage["public-"+sortie.id_sortie_public]);
+			/*
 			$('#s_log').append("terminé<br/>");
 
 			var keys = Object.keys(sortie);
@@ -339,6 +340,7 @@ function init_calendrier() {
 				$("#s_log").append("key : "+keys[i]+"<br>");
 			}
 			$('#s_log').append("pole "+sortie.pole+"<br>");
+			*/
 		}
 	);
 }
