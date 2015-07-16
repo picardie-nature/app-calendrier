@@ -212,10 +212,10 @@ function sortie_premiere_date(sortie) {
 }
 
 function liste_sorties_attr_reset() {
-		$('#liste_sorties').attr("id_reseau", -1);
-		$('#liste_sorties').attr("id_cadre", -1);
-		$('#liste_sorties').attr("type_sortie", -1);
-		$('#liste_sorties').attr("favoris", -1);
+	$('#liste_sorties').attr("id_reseau", -1);
+	$('#liste_sorties').attr("id_cadre", -1);
+	$('#liste_sorties').attr("type_sortie", -1);
+	$('#liste_sorties').attr("favoris", -1);
 }
 
 function init_calendrier() {
@@ -224,6 +224,10 @@ function init_calendrier() {
 	$('#btn_ouvre_favoris').click(function (e) {
 		liste_sorties_attr_reset();
 		$('#liste_sorties').attr("favoris", 1);
+		$.mobile.navigate("#liste_sorties");
+	});
+	$('#toutes').click(function (e) {
+		liste_sorties_attr_reset();
 		$.mobile.navigate("#liste_sorties");
 	});
 
@@ -316,6 +320,7 @@ function init_calendrier() {
 			if (id_cadre == -1) id_cadre = undefined;
 			$('#lv_sorties').html("");
 			var index_dates = JSON.parse(localStorage['index_dates']);
+			var n_visible = 0;
 			for (var i=0;i<index_dates.length;i++) {
 				var index_key = index_dates[i].split('-');
 				var id = index_key[5];
@@ -339,6 +344,7 @@ function init_calendrier() {
 					if (sortie.id_sortie_cadre != id_cadre)
 						continue;
 				}
+				n_visible += 1;
 				var date = new Date(sortie.date_sortie[jour].date_sortie)
 				date = date.toLocaleDateString('fr-fr',{weekday: "long", year: "numeric", month: "long", day: "numeric"});
 				$('#lv_sorties').append(
@@ -356,6 +362,10 @@ function init_calendrier() {
 				$('#sortie').attr('id_sortie', $(this).attr('id_sortie'));
 				$.mobile.navigate("#sortie");
 			});
+			if (n_visible == 0) {
+				navigator.notification.alert("Aucune activité affichée, faites une mise à jour du calendrier", null, "Erreur", "Ok");
+				$.mobile.navigate("#home");
+			}
 		}
 	);
 	$('#sortie').on("pagebeforeshow", function (evt) {
@@ -397,6 +407,7 @@ function init_calendrier() {
 				var obj_date = new Date(d.date_sortie);
 
 				if (obj_date < now) continue;
+				if (d.etat < 3) continue;
 
 				var html = "<p class='date_"+d.etat+"'>"+obj_date.toLocaleDateString('fr-fr',options_date);
 				if (d.inscription_prealable == true) 

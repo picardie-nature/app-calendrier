@@ -15,7 +15,6 @@
 	<script type="text/javascript" src="jquerymobile/jquery.mobile-1.4.5.min.js"></script>
 	<script type="text/javascript">
 		function onLoad() {
-			$('#status').html('chargement terminé<br>');
 			function onDeviceReady() {
 				init_calendrier();
 			}
@@ -25,24 +24,15 @@
 	</script>
 </head>
 <body onload="onLoad()">
-	<div data-role="page" id="splash">
-		<div data-role="header">Calendrier</div>
-		<div role="main" class="ui-content">
-			<p>Bienvenue sur le calendrier des activités de Picardie Nature.</p>
-			<a href="#home"><img src="img/logo.svg" style="width:100%;"></a>
-			<p><a href="#home">Démarrer</a></p>
-			<div id="status"></div>
-
-		</div>
-	</div>
 	<div data-role="page" id="home">
 		<div role="main" class="ui-content">
-			<p>Bienvenue sur le calendrier des activités de Picardie Nature.</p>
+			<img src="img/logo.svg" style="width:100%;">
 			<ul data-role="listview" data-inset="true">
+				<li><a href="#" id="toutes">Toutes les activités à venir</a></li>
 				<li><a href="#types">Consulter par types d'activités</a></li>
 				<li><a href="#reseaux">Consulter par thème</a></li>
 				<li><a href="#cadres">Consulter par cadre</a></li>
-				<li><a href="javascript:;" id="btn_ouvre_favoris">Voir ma sélection d'activités</a></li>
+				<li><a href="#" id="btn_ouvre_favoris">Voir ma sélection d'activités</a></li>
 			</ul>
 			<a href="javascript:;" class="ui-btn" id="btn_mettre_a_jour">Mettre à jour votre copie du calendrier</a>
 			<p id="home_derniere_synchro"></p>
@@ -50,39 +40,40 @@
 		</div>
 	</div>
 	<div data-role="page" id="types">
-		<div data-role="header">Types d'activités</div>
+		<div data-role="header" data-theme="b">Types d'activités</div>
 		<div role="main" class="ui-content">
 			<ul data-role="listview" id="liste_types"></ul>
 			<div id="typ_log"></div>
 		</div>
 	</div>
 	<div data-role="page" id="reseaux">
-		<div data-role="header">Par réseau</div>
+		<div data-role="header" data-theme="b">Thèmes</div>
 		<div role="main" class="ui-content">
 			<ul data-role="listview" id="liste_reseaux"></ul>
 			<div id="reseaux_log"></div>
-			<!--  data-inset="true" -->
 		</div>
 	</div>
 	<div data-role="page" id="cadres">
-		<div data-role="header">Par cadre</div>
+		<div data-role="header" data-theme="b">Cadres</div>
 		<div role="main" class="ui-content">
 			<ul data-role="listview" id="liste_cadres"></ul>
 		</div>
 	</div>
 	<div data-role="page" id="liste_sorties" type_sortie="-1" id_reseau="-1" id_cadre="-1" favoris="-1">
-		<div data-role="header">Liste des activités</div>
+		<div data-role="header" data-theme="b">Liste des activités</div>
 		<div role="main" class="ui-content">
-			<ul data-role="listview" id="lv_sorties"> 
-			</ul>
+			<ul data-role="listview" id="lv_sorties"></ul>
 			<div id="ls_log"></div>
 		</div>
 	</div>
 	<div data-role="page" id="sortie" id_sortie="-1">
-		<div data-role="header" id="s_titre">titre</div>
+		<div data-role="header" data-theme="b">
+			<h1>Activité</h1>
+		</div>
 		<div role="main" class="ui-content">
+			<h1 id="s_titre"></h1>
+			<a class="ui-btn ui-icon-star ui-btn-icon-notext ui-corner-all favoris" href="#" id="btn_ajout_favoris" data-icon="star"></a>
 			<img id="accessible_mobilite_reduite" src="img/mobilite_reduite_1.png"/>
-			<a href="javascript:;" id="btn_ajout_favoris" class="ui-btn ui-icon-star ui-btn-icon-notext ui-corner-all favoris"></a>
 			<div id="s_z_commune">
 				<h4>Localisation</h4>
 				Sur la commune de <span id="s_commune"></span> (<span id="s_departement"></span>)
