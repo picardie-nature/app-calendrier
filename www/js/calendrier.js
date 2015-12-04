@@ -418,15 +418,6 @@ function init_calendrier() {
 			}
 			$("#s_description_lieu").html(sortie.description_lieu);
 			$('#s_public').html(localStorage["public-"+sortie.id_sortie_public]);
-			/*
-			$('#s_log').append("terminé<br/>");
-
-			var keys = Object.keys(sortie);
-			for (var i=0; i<keys.length; i++) {
-				$("#s_log").append("key : "+keys[i]+"<br>");
-			}
-			$('#s_log').append("pole "+sortie.pole+"<br>");
-			*/
 		}
 	);
 }
