@@ -2,7 +2,7 @@
 <!-- Generator: Adobe Illustrator 17.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 
 <svg
-   xmlns:i="&amp;ns_ai;"
+   xmlns:i="&amp;#38;ns_ai;"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -34,23 +34,23 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="480"
+     inkscape:window-width="1366"
+     inkscape:window-height="721"
      id="namedview27"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="11.125147"
-     inkscape:cx="21.961246"
+     inkscape:zoom="5.5625735"
+     inkscape:cx="22.141019"
      inkscape:cy="10.107701"
      inkscape:window-x="0"
-     inkscape:window-y="31"
-     inkscape:window-maximized="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
      inkscape:current-layer="svg2" /><switch
      id="switch4"
-     transform="translate(-57,-58)"><foreignObject
+     transform="matrix(1.4466637,0,0,1.4466637,-90.010292,-91.699113)"><foreignObject
        requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/"
        x="0"
        y="0"
@@ -83,7 +83,7 @@
              inkscape:connector-curvature="0"
              style="fill:#706f6f" /></g></g><g
          id="Calque_2"><polygon
-           points="57,89.7 77.4,58 105.7,58 85.1,89.7 "
+           points="85.1,89.7 57,89.7 77.4,58 105.7,58 "
            id="polygon24"
            style="fill:none" /></g><g
          id="Calque_3" /></g></switch><i:pgf>

@@ -2,7 +2,7 @@
 <!-- Generator: Adobe Illustrator 17.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 
 <svg
-   xmlns:i="&amp;ns_ai;"
+   xmlns:i="&amp;#38;ns_ai;"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -34,8 +34,8 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="480"
+     inkscape:window-width="1366"
+     inkscape:window-height="721"
      id="namedview421"
      showgrid="false"
      fit-margin-top="0"
@@ -43,14 +43,14 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="2.6640327"
-     inkscape:cx="10.349994"
+     inkscape:cx="11.100736"
      inkscape:cy="16.350006"
      inkscape:window-x="0"
-     inkscape:window-y="31"
-     inkscape:window-maximized="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
      inkscape:current-layer="Calque_1" /><switch
      id="switch3"
-     transform="translate(-344,-339)"><foreignObject
+     transform="matrix(1.5825603,0,0,1.5825603,-547.40374,-551.87817)"><foreignObject
        requiredExtensions="http://ns.adobe.com/AdobeIllustrator/10.0/"
        x="0"
        y="0"
@@ -60,7 +60,7 @@
          xlink:href="#adobe_illustrator_pgf" /></foreignObject><g
        i:extraneous="self"
        id="g7"><polygon
-         points="344,370.7 364.4,339 392.7,339 372.1,370.7 "
+         points="372.1,370.7 344,370.7 364.4,339 392.7,339 "
          id="polygon9"
          style="fill:none" /><path
          d="m 363.2,355.8 c -0.3,0 -1.1,-0.2 -1.4,-0.1 -0.3,0.1 -0.8,0.5 0.3,1.1 1.1,0.6 0.2,0.9 -0.2,1.4 -0.3,0.5 -0.7,1.6 -3.9,1.3 -0.4,0 -0.8,0.4 -0.8,0.4 0,0 -0.4,0.1 -0.3,-0.5 0.1,-0.6 1.5,-2.4 1.5,-2.4 0,0 -3.6,2 -1.3,4.9 0.8,0.6 2.9,1.6 3.5,1.6 0.6,0 3.7,0.2 5.4,-0.3 1.7,-0.4 3,-2.4 3,-3.2 0,-0.8 -0.5,-2.6 -1.3,-3.4 -0.8,-0.8 -1.3,-1.2 -1.3,-1.2 0.6,1 2.4,2.2 2,3.3 -0.3,1.1 -1.7,0.3 -2.2,0.2 -0.5,-0.2 -1.4,-0.9 -1.6,-1.4 -0.2,-0.4 -0.3,-0.9 0,-1.3 0.3,-0.3 0.3,-0.8 0.3,-0.8 0,0 -1.3,0.4 -1.7,0.4 z"
@@ -124,14 +124,14 @@
            id="path41"
            inkscape:connector-curvature="0"
            style="fill:#706f6f" /><polygon
-           points="354.7,362.5 354.7,362.6 354.7,362.5 "
+           points="354.7,362.6 354.7,362.5 354.7,362.5 "
            id="polygon43"
            style="fill:#706f6f" /><path
            d="m 355.2,362.3 c 0,-0.1 0,0 0,0 0,0 0,0 0,0 z"
            id="path45"
            inkscape:connector-curvature="0"
            style="fill:#706f6f" /><polygon
-           points="355.4,362 355.4,362 355.3,361.9 "
+           points="355.4,362 355.3,361.9 355.4,362 "
            id="polygon47"
            style="fill:#706f6f" /></g><g
          id="g49"><path
@@ -178,7 +178,7 @@
            id="path71"
            inkscape:connector-curvature="0"
            style="fill:#706f6f" /><polygon
-           points="353.8,362.2 353.8,362.1 353.9,362.2 "
+           points="353.8,362.1 353.9,362.2 353.8,362.2 "
            id="polygon73"
            style="fill:#706f6f" /></g><g
          id="g75"><path
@@ -225,7 +225,7 @@
            id="path97"
            inkscape:connector-curvature="0"
            style="fill:#706f6f" /><polygon
-           points="354.8,364.7 354.8,364.7 354.9,364.7 "
+           points="354.8,364.7 354.9,364.7 354.8,364.7 "
            id="polygon99"
            style="fill:#706f6f" /></g><g
          id="g101"><path
@@ -413,7 +413,7 @@
            id="path201"
            inkscape:connector-curvature="0"
            style="fill:#706f6f" /><polygon
-           points="368.1,361.4 368.1,361.4 368.1,361.5 "
+           points="368.1,361.4 368.1,361.5 368.1,361.4 "
            id="polygon203"
            style="fill:#706f6f" /></g><path
          d="m 373.1,367.8 c 0,-0.1 -0.1,-0.3 -0.2,-0.7 -0.4,-1.5 -1.4,-5 -2.8,-8.7 -0.1,-0.3 -0.2,-0.6 -0.3,-0.9 -1.1,-3.1 -2.3,-6.3 -6.8,-6.8 -5.9,-0.6 -7.7,3.1 -9.7,7 -0.2,0.4 -0.4,0.9 -0.7,1.3 -2,3.8 -3.2,7.4 -3.3,7.8 l -0.2,0 c 0.1,-0.6 1.4,-4.3 3.3,-7.9 0.2,-0.4 0.5,-0.9 0.7,-1.3 2,-4 3.9,-7.7 9.9,-7.1 4.7,0.5 5.9,3.8 7,7 0.1,0.3 0.2,0.6 0.3,0.9 1.4,3.7 2.4,7.2 2.8,8.7 0.1,0.3 0.2,0.6 0.2,0.6 l -0.2,0.1 z"
@@ -457,14 +457,14 @@
            id="path225"
            inkscape:connector-curvature="0"
            style="fill:#706f6f" /><polygon
-           points="358.3,352.9 358.4,352.9 358.4,352.9 "
+           points="358.4,352.9 358.4,352.9 358.3,352.9 "
            id="polygon227"
            style="fill:#706f6f" /><path
            d="m 357.6,352.8 c 0,0.1 0,0 0,0 0,0 0,0 0,0 z"
            id="path229"
            inkscape:connector-curvature="0"
            style="fill:#706f6f" /><polygon
-           points="357.3,353.3 357.3,353.3 357.3,353.2 "
+           points="357.3,353.3 357.3,353.2 357.3,353.3 "
            id="polygon231"
            style="fill:#706f6f" /></g><g
          id="g233"><path
@@ -511,7 +511,7 @@
            id="path255"
            inkscape:connector-curvature="0"
            style="fill:#706f6f" /><polygon
-           points="366.3,353.2 366.3,353.2 366.4,353.1 "
+           points="366.3,353.2 366.4,353.1 366.3,353.2 "
            id="polygon257"
            style="fill:#706f6f" /></g><g
          id="g259"><path
@@ -656,7 +656,7 @@
            id="path339"
            inkscape:connector-curvature="0"
            style="fill:#706f6f" /><polygon
-           points="367.5,358.4 367.5,358.4 367.5,358.3 "
+           points="367.5,358.4 367.5,358.3 367.5,358.4 "
            id="polygon341"
            style="fill:#706f6f" /></g><g
          id="g343"><path
@@ -703,7 +703,7 @@
            id="path365"
            inkscape:connector-curvature="0"
            style="fill:#ffffff" /><polygon
-           points="360.9,358.9 360.9,358.9 360.9,358.8 "
+           points="360.9,358.9 360.9,358.8 360.9,358.9 "
            id="polygon367"
            style="fill:#ffffff" /></g><g
          id="g369"><path
@@ -750,7 +750,7 @@
            id="path391"
            inkscape:connector-curvature="0"
            style="fill:#ffffff" /><polygon
-           points="363.8,356.2 363.8,356.2 363.8,356.3 "
+           points="363.8,356.2 363.8,356.3 363.8,356.2 "
            id="polygon393"
            style="fill:#ffffff" /></g><g
          id="g395"><path
