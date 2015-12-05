@@ -378,7 +378,7 @@ function init_calendrier() {
 			var json = localStorage["sortie-"+id]
 			//$('#s_log').append(json+"<br/>");
 			var sortie = JSON.parse(json);
-
+			$('#fond').css('backgroundImage', "url('svg/reseaux/reseau_"+sortie.reseau_sortie+".svg')");
 			var b_fav = $('#btn_ajout_favoris');
 			if (est_dans_les_favoris(id)) {
 				if (!b_fav.hasClass('favoris')) {
@@ -405,7 +405,7 @@ function init_calendrier() {
 			$('#s_dates').html("");
 			sortie_tri_dates(sortie);
 			var options_date = {weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"};
-			var now = Date.now();
+			var now = Date.now()-86400*100;
 			for (var i=0; i<sortie.date_sortie.length; i++) {
 				var d = sortie.date_sortie[i];
 				var obj_date = new Date(d.date_sortie);
