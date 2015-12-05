@@ -262,10 +262,14 @@ function init_calendrier() {
 		});
 		for (var i=0;i<keys.length;i++) {
 			var id = keys[i].kid.split('-')[1]; 
+			var icone = "";
+			if (k_index == "index_reseaux")
+				icone = "<div style=\"float:left; width:50px;height:50px; background-repeat:no-repeat; background-size:50px; background-image:url('svg/reseaux/reseau_"+id+".svg');\"></div>";
 			ul.append(
 				"<li><a href='javascript:;' "+
 				"class='"+classe_btn+"' "+
 				"id_filtre='"+id+"'>"+
+				icone+
 				keys[i].lib+
 				"<span class='ui-li-count'>"+keys[i].count+"</span>"+
 				"</a>"+
