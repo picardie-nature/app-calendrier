@@ -422,6 +422,13 @@ function init_calendrier() {
 			}
 			$("#s_description_lieu").html(sortie.description_lieu);
 			$('#s_public').html(localStorage["public-"+sortie.id_sortie_public]);
+			$('#s_contact').html(sortie.orga_prenom+" "+sortie.orga_nom+" ");
+			if (sortie.orga_portable)
+				$('#s_contact').append("<a href=\"tel://"+sortie.orga_portable+"\">"+sortie.orga_portable+"</a>" );
+			if (sortie.ogra_tel)
+				$('#s_contact').append("<a href=\"tel://"+sortie.orga_tel+"\">"+sortie.orga_tel+"</a>" );
+			if (sortie.orga_mail)
+				$('#s_contact').append("<a href=\"tel://"+sortie.orga_mail+"\">"+sortie.orga_mail+"</a>" );
 		}
 	);
 }
