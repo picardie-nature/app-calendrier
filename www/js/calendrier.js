@@ -11,6 +11,7 @@ var etats = {
 	3: "Valide",
 	4: "Annulée"
 }
+
 function charger_calendrier() {
 	$(":mobile-pagecontainer").pagecontainer("change","#maj");
 	$('.maj_e').removeClass('mutted success run').addClass('mutted');
@@ -443,4 +444,18 @@ function init_calendrier() {
 				$('#s_contact').append("<a href=\"tel://"+sortie.orga_mail+"\">"+sortie.orga_mail+"</a>" );
 		}
 	);
+	var d = new Date(localStorage['derniere_maj']);
+	var diff = Date.now() - d.valueOf();
+	if (diff > 86400 * 2) {
+		navigator.notification.confirm(
+			"Votre copie du calendrier est un peut ancienne, souhaitez vous le mettre à jour ?",
+			function (btn) {
+				if (btn == 1) {
+					charger_calendrier();
+				}
+			},
+			"Mise à jour",
+			"Oui,Non"
+		);
+	}
 }
