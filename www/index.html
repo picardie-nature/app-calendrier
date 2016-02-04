@@ -37,7 +37,6 @@
 			</ul>
 			<a href="javascript:;" class="ui-btn" id="btn_mettre_a_jour">Mettre à jour votre copie du calendrier</a>
 			<p id="home_derniere_synchro"></p>
-			<div id="maj_log"></div>
 		</div>
 	</div>
 	<div data-role="page" id="types">
@@ -126,12 +125,31 @@
 				<img src="img/aisne.png">
 				<img src="img/somme.png">
 			</div>
-			<h4>Illustration</h4>
+			<h4>Illustrations</h4>
 			Florence Frenois
 			<h4>Conception</h4>
 			Sophie Declercq, Hélène Varlet, Nicolas Damiens
 			<h4>Développement</h4>
 			Nicolas Damiens
+		</div>
+	</div>
+	<div data-role="page" id="maj">
+		<div data-role="header" data-theme="b">
+			<h1>Mise à jour du calendrier</h1>
+		</div>
+		<div role="main" class="ui-content">
+			<p>La liste des activités est téléchargée sur votre appareil. De temps en temps
+			repasser par ici pour mettre à jour cette liste.</p>
+			<p>Progression :
+				<ul>
+					<li id="maj_e1" class="maj_e">Vérifier accès internet</li>
+					<li id="maj_e2" class="maj_e">Téléchargement de la liste</li>
+					<li id="maj_e3" class="maj_e">Enregistrement</li>
+					<li id="maj_e4" class="maj_e">Indexation</li>
+					<li id="maj_e5" class="maj_e">Terminé</li>
+				</ul>
+			</p>
+			<div id="maj_log"></div>
 		</div>
 	</div>
 </body>

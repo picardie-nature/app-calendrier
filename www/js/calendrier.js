@@ -12,10 +12,14 @@ var etats = {
 	4: "Annulée"
 }
 function charger_calendrier() {
-	$('#maj_log').append("Téléchargement de la mise à jour....<br/>");
+	$(":mobile-pagecontainer").pagecontainer("change","#maj");
+	$('.maj_e').removeClass('mutted success run').addClass('mutted');
+
+	//$('#maj_log').append("Téléchargement de la mise à jour....<br/>");
 	var url = "http://sorties.picardie-nature.org/?t=export_json";
 	var key = "shu9eiLelohgh1aW"; // c'est pas un grand secret ;-)
 
+	$('#maj_e1').addClass('run');
 	var net_ok = false;
 	if (navigator.connection.type == Connection.WIFI) { net_ok = true }
 	else if (navigator.connection.type == Connection.CELL_3G) { net_ok = true }
@@ -26,17 +30,26 @@ function charger_calendrier() {
 		navigator.notification.alert("Pas de connection Internet", null, "Erreur", "Ok");
 		return;
 	}
-
+	$('#maj_e1').removeClass('run').addClass('success');
+	$('#maj_e2').addClass('run');
 	$.ajax({
 		dataType: "json",
 		url: url,
 		data: {key: key},
 		success: function(data,txtstatus,xhr) {
-			$('#maj_log').append("Téléchargement terminé<br/>");
-			$('#maj_log').append(data.sorties.length+" sorties<br/>");
+			//$('#maj_log').append("Téléchargement terminé<br/>");
+			//$('#maj_log').append(data.sorties.length+" sorties<br/>");
+			$('#maj_e2').removeClass('run').addClass('success');
+			$('#maj_e3').addClass('run');
 			sauve_calendrier(data);
+			$('#maj_e3').removeClass('run').addClass('success');
+			$('#maj_e4').addClass('run');
 			construire_index_calendrier();
+			$('#maj_e4').removeClass('run').addClass('success');
+			$('#maj_e5').addClass('success');
 
+			navigator.notification.alert("La mise à jour est terminée, vous pouvez consulter le calendrier", null, "Terminé", "Ok");
+			$(":mobile-pagecontainer").pagecontainer("change","#home");
 		},
 		method: "post",
 		error: function (xhr,txtstatus,err) {
@@ -46,7 +59,7 @@ function charger_calendrier() {
 }
 
 function nettoyer_localStorage() {
-	$('#maj_log').append("nettoyage de la base ...<br>");
+	//$('#maj_log').append("nettoyage de la base ...<br>");
 	var re_sortie = /^sortie-/;
 	for (var i=0;i<localStorage.length;i++) {
 		var k = localStorage.key(i);
@@ -54,7 +67,7 @@ function nettoyer_localStorage() {
 			localStorage.removeItem(k);
 		}
 	}
-	$('#maj_log').append("nettoyage terminé<br>");
+	//$('#maj_log').append("nettoyage terminé<br>");
 }
 
 function sauve_calendrier(cal) {
@@ -89,11 +102,11 @@ function sauve_calendrier(cal) {
 	}
 	var d = new Date(Date.now());
 	localStorage.setItem('derniere_maj', d.toString());
-	$('#maj_log').append("Enregistrement terminé "+localStorage.length+ " éléments<br/>");
+	//$('#maj_log').append("Enregistrement terminé "+localStorage.length+ " éléments<br/>");
 }
 
 function construire_index_calendrier() {
-	$('#maj_log').append('Indexation<br/>');
+	//$('#maj_log').append('Indexation<br/>');
 	var index_types = {};
 	var index_reseaux = {};
 	var index_cadres = {};
@@ -153,7 +166,7 @@ function construire_index_calendrier() {
 	// format le la cle yyyy-mm-dd-hh-mm-id_sortie-offsetdate
 	index_dates.sort();
 	localStorage['index_dates'] = JSON.stringify(index_dates);
-	$('#maj_log').append('Indexation terminée, vous pouvez consulter le calendrier<br/>');
+	//$('#maj_log').append('Indexation terminée, vous pouvez consulter le calendrier<br/>');
 }
 
 function est_dans_les_favoris(id_sortie) {
@@ -303,75 +316,74 @@ function init_calendrier() {
 		aff_liste_cles("index_cadres", /^cadre-/, 'liste_cadres', 'btn_liste_cadre', "id_cadre");
 	});
 	$('#liste_sorties').on("pagebeforeshow", function(evt) {
-			var type_sortie = parseInt($(this).attr('type_sortie'));
-			var id_reseau = parseInt($(this).attr('id_reseau'));
-			var id_cadre = parseInt($(this).attr('id_cadre'));
-			var afficher_favoris = ($(this).attr('favoris') == 1);
-			var favoris = [];
-			if (afficher_favoris) {
-				if (localStorage['index_favoris'] != undefined) {
-					try {
-						favoris = JSON.parse(localStorage['index_favoris']);
-					} catch (e) {
-						navigator.notification.alert("Il y a un problème avec la préselection, l'index corrompu va être effacé", null, "Erreur", "Ok");
-						localStorage.removeItem("index_favoris");
-						favoris = [];
-					}
+		var type_sortie = parseInt($(this).attr('type_sortie'));
+		var id_reseau = parseInt($(this).attr('id_reseau'));
+		var id_cadre = parseInt($(this).attr('id_cadre'));
+		var afficher_favoris = ($(this).attr('favoris') == 1);
+		var favoris = [];
+		if (afficher_favoris) {
+			if (localStorage['index_favoris'] != undefined) {
+				try {
+					favoris = JSON.parse(localStorage['index_favoris']);
+				} catch (e) {
+					navigator.notification.alert("Il y a un problème avec la préselection, l'index corrompu va être effacé", null, "Erreur", "Ok");
+					localStorage.removeItem("index_favoris");
+					favoris = [];
 				}
-			}
-			if (type_sortie == -1) type_sortie = undefined;
-			if (id_reseau == -1) id_reseau = undefined;
-			if (id_cadre == -1) id_cadre = undefined;
-			$('#lv_sorties').html("");
-			var index_dates = JSON.parse(localStorage['index_dates']);
-			var n_visible = 0;
-			for (var i=0;i<index_dates.length;i++) {
-				var index_key = index_dates[i].split('-');
-				var id = index_key[5];
-				var jour = index_key[6];
-				if (!localStorage["sortie-"+id]) {
-					navigator.notification.alert("La sortie "+id+" existe pas", null, "Erreur", "Ok");
-				}
-				if (afficher_favoris) {
-					if (favoris.indexOf(id) == -1) {
-						continue;
-					}
-				}
-				var sortie = JSON.parse(localStorage["sortie-"+id]);
-				if (type_sortie != undefined) {
-					if (sortie.id_sortie_type != type_sortie)
-						continue;
-				} else if (id_reseau != undefined) {
-					if (sortie.id_sortie_reseau != id_reseau)
-						continue;
-				} else if (id_cadre != undefined) {
-					if (sortie.id_sortie_cadre != id_cadre)
-						continue;
-				}
-				n_visible += 1;
-				var date = new Date(sortie.date_sortie[jour].date_sortie)
-				date = date.toLocaleDateString('fr-fr',{weekday: "long", year: "numeric", month: "long", day: "numeric"});
-				$('#lv_sorties').append(
-					"<li><a href='javascript:;' "+
-					"class='btn_liste_sortie' "+
-					"id_sortie="+id+" >"+
-					"<h2>"+sortie.nom_sortie+"</h2>"+
-					"<p>"+date+"</p>"+
-					"<p class=ui-li-aside>"+sortie.departement+"</p>"+
-					"</a></li>"
-				);
-			}
-			$('#lv_sorties').listview('refresh');
-			$('.btn_liste_sortie').click(function (e) {
-				$('#sortie').attr('id_sortie', $(this).attr('id_sortie'));
-				$.mobile.navigate("#sortie");
-			});
-			if (n_visible == 0) {
-				navigator.notification.alert("Aucune activité affichée, faites une mise à jour du calendrier", null, "Erreur", "Ok");
-				$.mobile.navigate("#home");
 			}
 		}
-	);
+		if (type_sortie == -1) type_sortie = undefined;
+		if (id_reseau == -1) id_reseau = undefined;
+		if (id_cadre == -1) id_cadre = undefined;
+		$('#lv_sorties').html("");
+		var index_dates = JSON.parse(localStorage['index_dates']);
+		var n_visible = 0;
+		for (var i=0;i<index_dates.length;i++) {
+			var index_key = index_dates[i].split('-');
+			var id = index_key[5];
+			var jour = index_key[6];
+			if (!localStorage["sortie-"+id]) {
+				navigator.notification.alert("La sortie "+id+" existe pas", null, "Erreur", "Ok");
+			}
+			if (afficher_favoris) {
+				if (favoris.indexOf(id) == -1) {
+					continue;
+				}
+			}
+			var sortie = JSON.parse(localStorage["sortie-"+id]);
+			if (type_sortie != undefined) {
+				if (sortie.id_sortie_type != type_sortie)
+					continue;
+			} else if (id_reseau != undefined) {
+				if (sortie.id_sortie_reseau != id_reseau)
+					continue;
+			} else if (id_cadre != undefined) {
+				if (sortie.id_sortie_cadre != id_cadre)
+					continue;
+			}
+			n_visible += 1;
+			var date = new Date(sortie.date_sortie[jour].date_sortie)
+			date = date.toLocaleDateString('fr-fr',{weekday: "long", year: "numeric", month: "long", day: "numeric"});
+			$('#lv_sorties').append(
+				"<li><a href='javascript:;' "+
+				"class='btn_liste_sortie' "+
+				"id_sortie="+id+" >"+
+				"<h2>"+sortie.nom_sortie+"</h2>"+
+				"<p>"+date+"</p>"+
+				"<p class=ui-li-aside>"+sortie.departement+"</p>"+
+				"</a></li>"
+			);
+		}
+		$('#lv_sorties').listview('refresh');
+		$('.btn_liste_sortie').click(function (e) {
+			$('#sortie').attr('id_sortie', $(this).attr('id_sortie'));
+			$.mobile.navigate("#sortie");
+		});
+		if (n_visible == 0) {
+			navigator.notification.alert("Aucune activité affichée, faites une mise à jour du calendrier", null, "Erreur", "Ok");
+			$.mobile.navigate("#home");
+		}
+	});
 	$('#sortie').on("pagebeforeshow", function (evt) {
 			var id = $(this).attr('id_sortie');
 			//$('#s_log').html("id_sortie = "+id+"<br/>");
