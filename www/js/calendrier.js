@@ -444,18 +444,31 @@ function init_calendrier() {
 				$('#s_contact').append("<a href=\"tel://"+sortie.orga_mail+"\">"+sortie.orga_mail+"</a>" );
 		}
 	);
-	var d = new Date(localStorage['derniere_maj']);
-	var diff = Date.now() - d.valueOf();
-	if (diff > 86400 * 2) {
+	if (localStorage['derniere_maj'] == undefined) {
 		navigator.notification.confirm(
-			"Votre copie du calendrier est un peut ancienne, souhaitez vous le mettre à jour ?",
+			"Pour fonctionner l'application a besoin de télécharger les dates qui sont au programme.",
 			function (btn) {
 				if (btn == 1) {
 					charger_calendrier();
 				}
 			},
-			"Mise à jour",
+			"Télécharger les données",
 			"Oui,Non"
 		);
+	} else {
+		var d = Date.parse(localStorage['derniere_maj']);
+		var diff = (Date.now() - d)/1000;
+		if (diff > 86400 * 2) {
+			navigator.notification.confirm(
+				"Votre copie du calendrier est un peut ancienne, souhaitez vous le mettre à jour ?"+diff,
+				function (btn) {
+					if (btn == 1) {
+						charger_calendrier();
+					}
+				},
+				"Mise à jour",
+				"Oui,Non"
+			);
+		}
 	}
 }
