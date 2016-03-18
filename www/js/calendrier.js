@@ -460,7 +460,7 @@ function init_calendrier() {
 		var diff = (Date.now() - d)/1000;
 		if (diff > 86400 * 2) {
 			navigator.notification.confirm(
-				"Votre copie du calendrier est un peut ancienne, souhaitez vous le mettre à jour ?"+diff,
+				"Votre copie du calendrier est un peut ancienne, souhaitez vous le mettre à jour ?",
 				function (btn) {
 					if (btn == 1) {
 						charger_calendrier();
